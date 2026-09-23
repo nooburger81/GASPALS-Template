@@ -58,6 +58,10 @@
 		{
 			"Name": "NetworkPrediction",
 			"Enabled": true
+		},
+		{
+			"Name": "PlayerTemplate",
+			"Enabled": true
 		}
 	]
 }
