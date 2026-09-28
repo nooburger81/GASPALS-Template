@@ -72,3 +72,9 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Marketplace / Fab asset packs (not our work - reinstall from Fab)
+Content/AgileSwordsmanAnims/
+Content/BossAnimationVol1/
+Content/HandsomeTwinSword/
+Content/QuangPhan/
