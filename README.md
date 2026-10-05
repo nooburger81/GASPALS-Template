@@ -18,16 +18,46 @@ Advanced Locomotion System (ALS) provides a nice Overlay System that allows us t
 
 An overview of the system is available on my YouTube channel [Polygon Hive](https://www.youtube.com/watch?v=RDWNfIqvWBk&list=PLs9e0eJQMI2aaulgKJzC8feN1UEwDkEnq)
 
-## Migrating Plugin
+## Using the plugins in another project (UE 5.8)
 
-To migrate the GASPALS plugin to your own Unreal Engine project, you can follow these steps:
+This repo ships two content-only plugins:
 
-1. Copy the `Plugins/GASPALS` folder to your project's `Plugins` folder.
-2. Merge the `Plugins/GASPALS/Config` files with your project's `Config` files.
-3. Copy `DefaultEngine.ini` content at the end of your project's `DefaultEngine.ini`.
-4. Copy `Tags/GameplayTags_GASPALS.ini` to your project's `Config/Tags` folder.
-5. Launch the project, an error message will prompt you to add collision settings, click add at the end of the message.
-6. Enjoy :)
+| Plugin | What it is | Depends on |
+|---|---|---|
+| `PlayerTemplate` | Player systems: inventory/hotbar/equip, guns, sword, bow, throwables, FP/TP cameras, flight, telekinesis, teleport, cover, interaction, doors/keys, checkpoints, enemy AI | nothing (works on its own) |
+| `GASPALS` | Motion-matching locomotion (Game Animation Sample + ALS overlays) and `BP_GASPCharacter`, which runs PlayerTemplate's systems on GASP movement | `PlayerTemplate` |
+
+Dependencies only go one way: GASPALS → PlayerTemplate. Never reference `/GASPALS/` or `/Game/` content from inside PlayerTemplate. If PlayerTemplate needs something that GASPALS supplies, add an empty variable for it and have the GASPALS side fill it in, the way `SourceRetargeter` works (see below).
+
+### PlayerTemplate only
+
+1. Copy `Plugins/PlayerTemplate` into your project's `Plugins` folder.
+2. Merge `Plugins/PlayerTemplate/Config/DefaultEngine.ini` into your project's `Config/DefaultEngine.ini`. It adds the Grass/Metal/Wood physical surfaces used for footsteps and a 1 cm near clip plane for first person. **If your project already defines physical surfaces, Grass/Metal/Wood must still be SurfaceType1/2/3.**
+3. Set the game mode to `/PlayerTemplate/Core/GMB_TemplateTest`, either in Project Settings > Maps & Modes or in a level's World Settings.
+4. Optional: open `/PlayerTemplate/Maps/GameGym` as a test level.
+
+### PlayerTemplate + GASPALS
+
+1. Copy both `Plugins/PlayerTemplate` and `Plugins/GASPALS`.
+2. Merge both plugins' `Config/DefaultEngine.ini` files into your project's `Config/DefaultEngine.ini`. GASPALS adds the renderer settings it needs, its debug CVars, and the **`Traversable` trace channel, which must be `ECC_GameTraceChannel1`**. If your project already uses GameTraceChannel1 for something else, the traversal traces will break.
+3. Copy `Plugins/GASPALS/Config/Tags/GameplayTags_GASPALS.ini` into your project's `Config/Tags/` folder. Unreal does **not** load tags from the plugin folder. Without this file, Foley footstep/jump/land sounds silently break with "Invalid GameplayTag Foley.Event.*" warnings.
+4. Set the game mode to `/GASPALS/Player/GM_GASPPlayer`. Its pawn is `/GASPALS/Player/BP_GASPCharacter`.
+5. If a level spawns the wrong character, check that level's World Settings for a GameMode override (the stock GASP levels use `GM_Sandbox`).
+
+### Packaging
+
+Plugin maps aren't cooked unless something references them. Add every map you ship (for example `GameGym`) to Project Settings > Packaging > *List of maps to include*.
+
+### How the two plugins hook together
+
+- `CBP_SandboxCharacter` (GASPALS) is a child of `BP_MasterCharacter` (PlayerTemplate). Per-frame player logic for the GASP character lives in `BP_GASPCharacter`'s Tick, because `CBP_SandboxCharacter` doesn't call the parent Tick.
+- `ABP_MasterCharacter` retargets the hidden UEFN driver mesh onto the visible Soldier mesh only when the character supplies an IK Retargeter. `BP_MasterCharacter.SourceRetargeter` is empty by default, and `BP_GASPCharacter` sets it to `RTG_UEFN_to_UE5_Mannequin`. `ABP_MasterCharacter.DetectSourceMeshPose` copies it into the Retarget Pose From Mesh node at init.
+- The bow's mesh, skeleton and AnimBP live in `PlayerTemplate/Core/Equipment/Weapons/Assets/Bow`. GASP's `DA_Overlay_Bow` points at them there.
+
+### Known leftovers (harmless)
+
+- Some imported animations and the Soldier skeleton still name `/Game/...SKM_Manny_Simple` as their editor preview mesh. The SkyTown candle/daisy/rope materials carry stale texture-streaming names under `/Game/...`. Neither is loaded or cooked.
+- The unused `PostProcess/Holograms` materials use textures from editor-only engine plugins (SpeedTreeImporter, MeshModelingToolsetExp).
 
 ## Contributing
 

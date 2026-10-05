@@ -3,9 +3,9 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "PlayerTemplate",
-	"Description": "",
+	"Description": "Player character systems: inventory/hotbar/equip, guns, sword, bow, throwables, FP/TP cameras, flight, telekinesis, teleport, cover, interaction, doors/keys, checkpoints, enemy AI. Works standalone; add GASPALS for motion-matching locomotion.",
 	"Category": "Player Systems",
-	"CreatedBy": "",
+	"CreatedBy": "Brandon Sebastian",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
@@ -13,5 +13,23 @@
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
-	"Installed": false
+	"Installed": false,
+	"Plugins": [
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		},
+		{
+			"Name": "Niagara",
+			"Enabled": true
+		},
+		{
+			"Name": "IKRig",
+			"Enabled": true
+		},
+		{
+			"Name": "InterchangeAssets",
+			"Enabled": true
+		}
+	]
 }

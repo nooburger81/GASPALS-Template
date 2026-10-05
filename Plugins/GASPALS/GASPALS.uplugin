@@ -60,6 +60,22 @@
 			"Enabled": true
 		},
 		{
+			"Name": "GameplayCameras",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		},
+		{
+			"Name": "ControlRig",
+			"Enabled": true
+		},
+		{
+			"Name": "IKRig",
+			"Enabled": true
+		},
+		{
 			"Name": "PlayerTemplate",
 			"Enabled": true
 		}
