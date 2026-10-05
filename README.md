@@ -27,6 +27,8 @@ This repo ships two content-only plugins:
 | `PlayerTemplate` | Player systems: inventory/hotbar/equip, guns, sword, bow, throwables, FP/TP cameras, flight, telekinesis, teleport, cover, interaction, doors/keys, checkpoints, enemy AI | nothing (works on its own) |
 | `GASPALS` | Motion-matching locomotion (Game Animation Sample + ALS overlays) and `BP_GASPCharacter`, which runs PlayerTemplate's systems on GASP movement | `PlayerTemplate` |
 
+**PlayerTemplate's master copy lives in its own project, `D:\PlayerTemplate` (repo `nooburger81/PlayerTemplate`).** The copy in this repo's `Plugins/PlayerTemplate` is a consumer snapshot. Make PlayerTemplate changes in the master project, then copy the folder here. Fixes made here won't flow back on their own.
+
 Dependencies only go one way: GASPALS → PlayerTemplate. Never reference `/GASPALS/` or `/Game/` content from inside PlayerTemplate. If PlayerTemplate needs something that GASPALS supplies, add an empty variable for it and have the GASPALS side fill it in, the way `SourceRetargeter` works (see below).
 
 ### PlayerTemplate only
